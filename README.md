@@ -1,38 +1,20 @@
-# Getting started
+# @romanzy/lit-router
 
-```bash
-git clone https://github.com/romanzy-1612/modern-ts-lib-starter.git PROJECTNAME
-cd PROJECTNAME
-npm install
-npm start
-```
-
-## Whats included
-
-- Jest testing with watch mode
-- Bundling to ES and UMD modules
-- Minimal eslint and prettier configuration
-- Example sub project with vite
-- package.json is ready for publishing to npm. Make sure to replace <PLACEHOLDERS>
-- Templates with placeholders: readme, license, bug report, feature request
-
-# Credits
-
-Initial project setup was taken from [peer-lite](https://github.com/skyllo/peer-lite) project. Thank you skyllo!
-
-# <PROJECT-NAME>
-
-Description
+A simple router for lit. Dive into [here](example) to see how it works.
 
 # Features
+
+TODO
 
 # Installation
 
 ```bash
-npm i <LIB-NAME>
+npm i @romanzy/lit-router
 ```
 
 # Usage
+
+TODO
 
 # Examples
 
@@ -41,6 +23,8 @@ See more examples [here](example)
 # API
 
 # Testing
+
+No testing yet
 
 ```bash
 npm t

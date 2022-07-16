@@ -1,7 +1,7 @@
 {
-  "name": "<LIB-NAME>",
-  "description": "<DESCRIPTION>",
-  "version": "0.0.0",
+  "name": "@romanzy/lit-router",
+  "description": "Simple router for lit",
+  "version": "1.0.0",
   "main": "./dist/index.js",
   "module": "./dist/index.es.js",
   "types": "./dist/types/index.d.ts",
@@ -21,7 +21,13 @@
     "lint:fix": "npm run lint -- --fix",
     "prettier-format": "prettier --config .prettierrc 'src/**/*.ts' --write"
   },
+  "dependencies": {
+    "@romanzy/web-event-emitter": "^1.0.2",
+    "feather-route-matcher": "^4.0.0",
+    "lit": "^2.2.7"
+  },
   "devDependencies": {
+    "@types/feather-route-matcher": "^3.1.1",
     "@rollup/plugin-typescript": "^8.3.3",
     "@swc/core": "^1.2.215",
     "@swc/jest": "^0.2.21",
@@ -45,9 +51,9 @@
   "keywords": [],
   "repository": {
     "type": "git",
-    "url": "https://github.com/<GIT-USERNAME>/<LIB-NAME>.git"
+    "url": "https://github.com/<GIT-USERNAME>/lit-router.git"
   },
-  "author": "<NAME>",
+  "author": "Roman Volovoy",
   "files": [
     "dist",
     "src"

@@ -5,15 +5,28 @@ import typescript from 'typescript';
 
 const isDevelopment = process.env.BUILD === 'development';
 
+const externalDependencies: string[] = [
+  'lit',
+  'lit/decorators.js',
+  'feather-route-matcher',
+  '@romanzy/web-event-emitter',
+];
+
 const rollupConfig: RollupOptions = {
   input: 'src/index.ts',
   output: [
     {
       file: 'dist/index.js',
       format: 'umd',
-      name: '<LIB-NAME>',
+      name: 'LitRouter',
       sourcemap: true,
       interop: false,
+      globals: {
+        // TODO
+        // lit: 'Lit',
+        // 'feather-route-matcher': 'c',
+        // 'lit/decorators.js': '??',
+      },
     },
     {
       file: 'dist/index.es.js',
@@ -22,6 +35,7 @@ const rollupConfig: RollupOptions = {
       interop: false,
     },
   ],
+  external: externalDependencies,
   plugins: [
     typescript2({
       typescript,
