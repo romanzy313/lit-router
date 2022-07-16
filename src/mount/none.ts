@@ -15,7 +15,13 @@ export class NoHook implements RouterInterface {
   back(): void {
     throw new Error('Method not implemented.');
   }
-  navigate(path: string): void {}
-  mount(): void {}
-  unmount(): void {}
+  navigate(path: string): void {
+    throw new Error('Method not implemented.');
+  }
+  mount(): void {
+    throw new Error('Method not implemented.');
+  }
+  unmount(): void {
+    throw new Error('Method not implemented.');
+  }
 }

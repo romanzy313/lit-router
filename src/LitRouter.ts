@@ -147,10 +147,10 @@ export class LitRouter extends WebEventEmitter<EventMap> {
   private async tryNavigate(path: Path): Promise<RouteResult> {
     return await this.matchRoute(path)
       .then((r) => this.resolveRoute(r))
-      .then((r) => this.renderRoute(r))
-      .catch((errorResult: RouteErrorResult) => {
+      .catch((errorResult: PendingErrorRoute) => {
         return errorResult;
-      });
+      })
+      .then((r) => this.renderRoute(r));
   }
 
   public back() {
@@ -161,17 +161,21 @@ export class LitRouter extends WebEventEmitter<EventMap> {
     this.mount.forward();
   }
 
+  /*
+    path: Path;
+    params: ParsedParams;
+    status: 200;
+    resolve: (params: FailureData) => Promise<any>[];
+    render: (params: FailureData) => AsyncTemplateResult;
+  */
+
+  //do not return the result! just make it like a route
   private async buildFailedPendingRoute(
     where: string,
     withStatus: number,
     error: Error,
     request: RouteRequest
-  ): Promise<RouteErrorResult> {
-    const errorParams = {
-      error,
-      request,
-      router: this,
-    };
+  ): Promise<PendingErrorRoute> {
     const errorRouteDef =
       (this.routes[withStatus] as unknown as ErrorRouteDefinition) ??
       (this.routes['*'] as unknown as ErrorRouteDefinition);
@@ -179,17 +183,47 @@ export class LitRouter extends WebEventEmitter<EventMap> {
     console.error('Error on', request.path, 'in', where, 'with status code', withStatus);
     console.error(error);
 
-    const html = await errorRouteDef.render(errorParams);
     return {
       path: withStatus,
-      html,
-      params: request.params,
+      params: {
+        error,
+        request,
+        router: this,
+      },
       status: withStatus,
-      failure: errorParams,
+      ...errorRouteDef,
     }; //cause its string but whatevs
   }
 
-  private matchRoute(path: string) {
+  // private async buildFailedPendingRoute(
+  //   where: string,
+  //   withStatus: number,
+  //   error: Error,
+  //   request: RouteRequest
+  // ): Promise<RouteErrorResult> {
+  //   const errorParams = {
+  //     error,
+  //     request,
+  //     router: this,
+  //   };
+  //   const errorRouteDef =
+  //     (this.routes[withStatus] as unknown as ErrorRouteDefinition) ??
+  //     (this.routes['*'] as unknown as ErrorRouteDefinition);
+
+  //   console.error('Error on', request.path, 'in', where, 'with status code', withStatus);
+  //   console.error(error);
+
+  //   const html = await errorRouteDef.render(errorParams);
+  //   return {
+  //     path: withStatus,
+  //     html,
+  //     params: request.params,
+  //     status: withStatus,
+  //     failure: errorParams,
+  //   }; //cause its string but whatevs
+  // }
+
+  private matchRoute(path: string): Promise<PendingOkRoute> {
     console.log('routing to', path);
 
     return new Promise<PendingOkRoute>((resolve, reject) => {
@@ -338,26 +372,38 @@ export class LitRouter extends WebEventEmitter<EventMap> {
     });
   }
 
-  private renderRoute(pendingRoute: PendingOkRoute): Promise<RouteOkResult> {
+  //technically its PendingErrorRoute but ts is strict
+  private renderRoute(pendingRoute: PendingRoute): Promise<RouteResult> {
+    // if (pendingRoute.status === 200)
+    // {
+    //   // meaning its okay
+    // }
+
     // eslint-disable-next-line no-async-promise-executor
-    return new Promise<RouteOkResult>(async (resolve, reject) => {
+    return new Promise<RouteResult>(async (resolve, _reject) => {
+      let html;
       try {
-        const html = await pendingRoute.render(pendingRoute.params);
-        return resolve({
-          path: pendingRoute.path,
-          html,
-          params: pendingRoute.params,
-          status: pendingRoute.status,
-          failure: null,
-        });
+        html = await pendingRoute.render(pendingRoute.params as any);
       } catch (error) {
-        return reject(
-          this.buildFailedPendingRoute('render', 400, error as Error, {
+        pendingRoute = this.buildFailedPendingRoute(
+          'render',
+          400,
+          error as Error,
+          {
             path: pendingRoute.path,
             params: pendingRoute.params,
-          })
-        );
+          } as any
+        ) as any;
+        html = await pendingRoute.render(pendingRoute.params as any);
       }
+
+      return resolve({
+        path: pendingRoute.path,
+        html,
+        params: pendingRoute.params,
+        status: pendingRoute.status,
+        failure: pendingRoute.status === 200 ? null : pendingRoute.params,
+      } as any);
     });
   }
 }
