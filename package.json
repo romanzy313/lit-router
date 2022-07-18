@@ -1,7 +1,7 @@
 {
   "name": "@romanzy/lit-router",
   "description": "Simple router for lit",
-  "version": "1.0.2",
+  "version": "1.0.3",
   "main": "./dist/index.js",
   "module": "./dist/index.es.js",
   "types": "./dist/types/index.d.ts",
@@ -51,7 +51,7 @@
   "keywords": [],
   "repository": {
     "type": "git",
-    "url": "https://github.com/<GIT-USERNAME>/lit-router.git"
+    "url": "https://github.com/romanzy-1612/lit-router.git"
   },
   "author": "Roman Volovoy",
   "files": [
