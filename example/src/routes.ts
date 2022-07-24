@@ -1,5 +1,5 @@
 import { html } from 'lit';
-import { RouteDefinitions } from '../../src/types';
+import { RouteDefinitions } from '../../src';
 
 const sleep = (milliseconds: number | undefined) =>
   new Promise((resolve) => setTimeout(resolve, milliseconds));
@@ -26,5 +26,9 @@ export const routes: RouteDefinitions = {
   '/not-found': {
     resolve: () => [Promise.reject('bad url')],
     render: () => html` Will never render `,
+  },
+  404: {
+    resolve: () => [],
+    render: () => html` Not found `,
   },
 };

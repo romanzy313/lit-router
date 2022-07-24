@@ -9,6 +9,16 @@ export type EventMap = {
   error: (routeResult: RouteErrorResult) => void;
 };
 
+export type RouteError = {
+  where: string; //its a named middlewhere,
+  withStatus: number;
+  error: Error;
+};
+
+export type Context = {
+  pendingRoute: PendingRoute;
+};
+
 export type RouteState = 'ok' | 'pending' | 'error';
 export type MountStrategy = 'none' | 'hash' | 'page';
 
@@ -80,10 +90,13 @@ export type PendingErrorRoute = {
   status: Status;
 } & ErrorRouteDefinition;
 
-export type RouteDefinitions = {
-  [path: Path]: RouteDefinition;
-  [status: Status]: RouteDefinition;
-};
+export type RouteDefinitions =
+  | {
+      [path: Path]: RouteDefinition;
+    }
+  | {
+      [status: Status]: ErrorRouteDefinition;
+    };
 
 export interface RouterInterface {
   currentPath(): Path;

@@ -31,7 +31,7 @@ const rollupConfig: RollupOptions = {
     {
       file: 'dist/index.es.js',
       format: 'es',
-      sourcemap: true,
+      sourcemap: 'inline',
       interop: false,
     },
   ],
