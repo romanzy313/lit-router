@@ -45,7 +45,7 @@ export class LitRouter extends WebEventEmitter<EventMap> {
 
   constructor() {
     super();
-    this.pipeline.push('resolve', this.resolveRoute);
+    this.pipeline.push('resolve', this.tryResolveRoute);
     this.pipeline.push('render', this.renderRoute);
     // this.pipeline.push(this.renderRoute);
   }
@@ -103,7 +103,7 @@ export class LitRouter extends WebEventEmitter<EventMap> {
     // add catch all last. needed for feather route library
     if (!('*' in this.routes)) this.routes['*'] = unhandledErrorRoute as any;
 
-    this.matcher = createMatcher(this.routes) as any;
+    this.matcher = createMatcher(this.routes as any) as any;
 
     const path = this.mount.currentPath();
     this.routeResult = {
@@ -158,26 +158,33 @@ export class LitRouter extends WebEventEmitter<EventMap> {
     try {
       pendingRoute = await this.matchRoute(path);
       // this.pipeline.execute(context);
-      const errorCb: ErrorShape = (code, originalError) => {
-        throw {
-          code,
-          originalError,
-        };
-      };
+      // const errorCb: ErrorShape = (code, originalError) => {
+      //   throw {
+      //     code,
+      //     originalError,
+      //   };
+      // };
       //here execute the middleware
-      this.resolveRoute(pendingRoute, errorCb);
+      await this.tryResolveRoute(pendingRoute);
     } catch (e) {
       const { where, withStatus, error } = e as RouteError;
-      pendingRoute = this.buildFailedPendingRoute(where as any, withStatus as any, error, {
-        path,
-        params: pendingRoute.params as any,
-      });
+      console.log('!!!!!!!!!!error with status', e);
+
+      pendingRoute = this.buildFailedPendingRoute(
+        where as any,
+        withStatus as any,
+        error,
+        {
+          path,
+          params: pendingRoute.params as any,
+        }
+      );
       //error is irrelevant for now?
-    } finally {
-      // eslint-disable-next-line no-unsafe-finally
-      return await this.renderRoute(pendingRoute); //this will never fail
     }
 
+    console.log('rendering route', pendingRoute);
+
+    return await this.renderRoute(pendingRoute); //this will never fail
     // return await this.matchRoute(path)
     //   .then((r) => this.resolveRoute(r))
     //   .catch((errorResult: PendingErrorRoute) => {
@@ -206,10 +213,21 @@ export class LitRouter extends WebEventEmitter<EventMap> {
       (this.routes[withStatus] as unknown as ErrorRouteDefinition) ??
       (this.routes['*'] as unknown as ErrorRouteDefinition);
 
-    console.error('Error on', request.path, 'in', where, 'with status code', withStatus);
+    console.error(
+      'Error on',
+      request.path,
+      'in',
+      where,
+      'with status code',
+      withStatus
+    );
     console.error(error);
 
-    return {
+    console.warn('with status', this.routes[withStatus], withStatus);
+
+    // console.warn(errorRouteDef.render({}));
+
+    const result = {
       path: withStatus,
       params: {
         error,
@@ -219,6 +237,10 @@ export class LitRouter extends WebEventEmitter<EventMap> {
       status: withStatus,
       ...errorRouteDef,
     }; //cause its string but whatevs
+
+    console.log('failed route result', result);
+
+    return result;
   }
 
   private matchRoute(path: Path): Promise<PendingOkRoute> {
@@ -230,15 +252,11 @@ export class LitRouter extends WebEventEmitter<EventMap> {
 
       // this should work
       if (params.path && params.path == path) {
-        console.log('route not found on', params);
-
-        //dont build it in here... we know path and params... just throw
-        return reject(
-          this.buildFailedPendingRoute('route', 404, new Error(`${res.url} is not found`), {
-            path,
-            params,
-          })
-        );
+        return reject({
+          where: 'match',
+          error: new Error('route not found'),
+          withStatus: 404,
+        } as RouteError);
       }
 
       return resolve({
@@ -333,12 +351,47 @@ export class LitRouter extends WebEventEmitter<EventMap> {
 
   // I can create my own error and throw it
 
-  private resolveRoute(pendingRoute: PendingOkRoute, errorFn: ErrorShape) {
+  private convertUnresolvedError(error: any): {
+    error: Error;
+    withStatus: number;
+  } {
+    //
+    // pendingRoute.
+
+    if (typeof error === 'number')
+      return {
+        error: new Error('Reported error: ' + error.toString()),
+        withStatus: error,
+      };
+    else if (typeof error === 'string')
+      return {
+        error: new Error(error),
+        withStatus: 400,
+      };
+    else if (error instanceof Error)
+      return {
+        error,
+        withStatus: 400,
+      };
+    else
+      return {
+        error: new Error('unknown error: ' + error.toString()),
+        withStatus: 400,
+      };
+  }
+
+  private tryResolveRoute(pendingRoute: PendingOkRoute) {
     console.log('resolving route', pendingRoute);
 
     // TODO this actually needs to store it in the map with results
     // which needs to be done after the .next chain
-    if (this.resolvedResults.has(pendingRoute.path)) return;
+
+    // dont cache errors!
+    if (
+      typeof pendingRoute.path !== 'number' &&
+      this.resolvedResults.has(pendingRoute.path)
+    )
+      return;
 
     const resolveArray = pendingRoute.resolve(pendingRoute.params);
     if (resolveArray.length == 0) {
@@ -347,28 +400,21 @@ export class LitRouter extends WebEventEmitter<EventMap> {
       // return resolve(pendingRoute);
     }
 
-    Promise.all(resolveArray)
-      .then((resolveResult) => {
-        console.log('resolving route full okay', resolveResult);
+    return Promise.all(resolveArray).catch((error) => {
+      console.error(
+        'resolving route error',
+        error,
+        'on pending route',
+        pendingRoute
+      );
 
-        // return resolve(pendingRoute);
-      })
-      .catch((error) => {
-        console.error('resolving route full error', 'pending route', pendingRoute);
+      const stdError = typeof error === 'string' ? new Error(error) : error;
 
-        //catch the errors here and assign correct render view
-
-        // TODO here need to add support for error and return code
-        // handle standard errors from fetch
-
-        errorFn(400, error);
-        // return reject(
-        //   this.buildFailedPendingRoute('resolve', 400, error, {
-        //     path: pendingRoute.path,
-        //     params: pendingRoute.params,
-        //   })
-        // );
-      });
+      throw {
+        where: 'resolve',
+        ...this.convertUnresolvedError(error),
+      } as RouteError;
+    });
   }
 
   //technically its PendingErrorRoute but ts is strict
@@ -380,10 +426,14 @@ export class LitRouter extends WebEventEmitter<EventMap> {
 
     // eslint-disable-next-line no-async-promise-executor
 
+    console.log('!!!RENDER pending route', pendingRoute);
+
     let html;
     try {
       html = await pendingRoute.render(pendingRoute.params as any);
     } catch (error) {
+      console.log('render error', error);
+
       // errorFn(400, error as Error);
       pendingRoute = this.buildFailedPendingRoute(
         'render',

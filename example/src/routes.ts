@@ -1,5 +1,5 @@
 import { html } from 'lit';
-import { RouteDefinitions } from '../../src';
+import { ErrorRouteDefinition, RouteDefinitions } from '../../src';
 
 const sleep = (milliseconds: number | undefined) =>
   new Promise((resolve) => setTimeout(resolve, milliseconds));
@@ -23,12 +23,20 @@ export const routes: RouteDefinitions = {
     ],
     render: ({ name }) => html`<remote-component name=${name}></remote-component>`,
   },
-  '/not-found': {
-    resolve: () => [Promise.reject('bad url')],
+  '/resolve-error': {
+    resolve: () => [Promise.reject('resolve error')],
     render: () => html` Will never render `,
   },
+  '/admin': {
+    resolve: () => [Promise.reject(403)],
+    render: () => html` Welcome Mr. Admin `,
+  },
+  403: {
+    resolve: () => [],
+    render: ({ request }) => html` You have no access to ${request.path}`,
+  } as ErrorRouteDefinition,
   404: {
     resolve: () => [],
-    render: () => html` Not found `,
-  },
+    render: ({ request }) => html` Page "${request.path}" is not found`,
+  } as ErrorRouteDefinition,
 };

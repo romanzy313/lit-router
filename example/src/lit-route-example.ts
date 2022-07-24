@@ -8,12 +8,14 @@ import { routes } from './routes';
 export class LitRouteDemo extends LitElement {
   render() {
     return html`
-      <div>
-        <h3>Header</h3>
-        <a href="#/">Go home</a>
-        <a href="#/test">Go test</a>
-        <a href="#/remote-component/lit-router">With params</a>
-        <a href="#/bad-route">Not found route</a>
+      <div class="nav">
+        <h3>Navigation bar</h3>
+        <a href="/">Home</a>
+        <a href="#/test">Test</a>
+        <a href="#/remote-component/lit-router">Parameters</a>
+        <a href="#/not-found">Not found</a>
+        <a href="#/resolve-error">Resolve error</a>
+        <a href="#/admin">Admin page</a>
       </div>
       <lit-router .routes=${routes}></lit-router>
     `;
@@ -21,10 +23,21 @@ export class LitRouteDemo extends LitElement {
 
   static styles = css`
     :host {
-      max-width: 1280px;
+      margin-block: 1rm;
+      /* max-width: 1280px;
       margin: 0 auto;
       padding: 2rem;
-      text-align: center;
+      text-align: center; */
+    }
+    .nav {
+      display: flex;
+      flex-direction: column;
+      margin-bottom: 2rem;
+      background-color: lightgray;
+    }
+    h3 {
+      padding: 0;
+      margin: 0;
     }
     a {
       margin-inline: 1rem;

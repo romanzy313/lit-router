@@ -8,3 +8,6 @@ dist
 .cache
 coverage
 *-*.tgz
+/test-results/
+/playwright-report/
+/playwright/.cache/

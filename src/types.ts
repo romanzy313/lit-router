@@ -40,7 +40,9 @@ export type FailureData = {
 
 export type ErrorObj = { path: Path; error: Error };
 
-export type AsyncTemplateResult = Promise<TemplateResult<1>> | TemplateResult<1>;
+export type AsyncTemplateResult =
+  | Promise<TemplateResult<1>>
+  | TemplateResult<1>;
 // | string
 // | typeof nothing;
 

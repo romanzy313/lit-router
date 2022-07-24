@@ -2,6 +2,8 @@
 
 A simple router for lit. Dive into [here](example) to see how it works.
 
+Still an early version of the library. Expect breaking changes!
+
 # Features
 
 TODO
@@ -16,22 +18,12 @@ npm i @romanzy/lit-router
 
 TODO
 
-# Examples
-
-See more examples [here](example)
-
 # API
 
 # Testing
 
-No testing yet
+run e2e tests
 
 ```bash
 npm t
-```
-
-or
-
-```bash
-npm run test:watch
 ```
