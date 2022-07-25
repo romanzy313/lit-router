@@ -1,25 +1,26 @@
 {
   "name": "@romanzy/lit-router",
   "description": "Simple router for lit",
-  "version": "1.0.3",
+  "version": "1.0.4",
   "main": "./dist/index.js",
-  "module": "./dist/index.es.js",
-  "types": "./dist/types/index.d.ts",
+  "module": "./dist/index.js",
+  "types": "./dist/index.d.ts",
   "scripts": {
-    "demo": "cd ./example && npm run test",
-    "build": "rollup --config rollup.config.ts --configPlugin typescript",
+    "demo": "cd ./example && yarn test",
+    "build": "rollup --config rollup.config.ts --configPlugin typescript && yarn build:manifest",
     "build:watch": "rollup --watch --config rollup.config.ts --configPlugin typescript",
+    "build:manifest": "custom-elements-manifest analyze --litelement --globs \"src/*\"",
     "test": "npx playwright test",
-    "test:watch": "npm run test && chokidar test/**/*.{spec,test}.{js,ts} -c 'npm run test'",
+    "test:watch": "yarn test && chokidar test/**/*.{spec,test}.{js,ts} -c 'yarn test'",
     "test:report": "npx playwright show-report",
     "clean": "rimraf -rf dist/* && rimraf -rf ./*-*.tgz",
     "postinstall": "cd ./example && npm i",
-    "prebuild": "npm run clean",
-    "prepublishOnly": "npm run prettier-format && npm run lint && npm run build",
-    "npm:pack": "npm run build && npm pack",
-    "npm:publish": "npm run build && npm publish",
+    "prebuild": "yarn clean",
+    "prepublishOnly": "yarn build",
+    "npm:pack": "yarn build && npm pack",
+    "npm:publish": "yarn build && npm publish",
     "lint": "eslint . --ext .ts",
-    "lint:fix": "npm run lint -- --fix",
+    "lint:fix": "yarn lint -- --fix",
     "prettier-format": "prettier --config .prettierrc 'src/**/*.ts' --write"
   },
   "dependencies": {
@@ -28,6 +29,7 @@
     "lit": "^2.2.7"
   },
   "devDependencies": {
+    "@custom-elements-manifest/analyzer": "^0.6.3",
     "@playwright/test": "^1.24.0",
     "@rollup/plugin-typescript": "^8.3.3",
     "@swc/core": "^1.2.215",
@@ -60,7 +62,9 @@
   "author": "Roman Volovoy",
   "files": [
     "dist",
-    "src"
+    "src",
+    "test",
+    "custom-elements.json"
   ],
   "jest": {
     "transform": {
@@ -68,5 +72,6 @@
         "@swc/jest"
       ]
     }
-  }
+  },
+  "customElements": "custom-elements.json"
 }
