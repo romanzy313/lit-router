@@ -22,7 +22,11 @@ TODO
 
 # Testing
 
-run e2e tests
+Before running make sure to install example
+
+```bash
+cd ./example && yarn install
+```
 
 ```bash
 npm t

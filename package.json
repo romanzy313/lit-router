@@ -14,11 +14,8 @@
     "test:watch": "yarn test && chokidar test/**/*.{spec,test}.{js,ts} -c 'yarn test'",
     "test:report": "npx playwright show-report",
     "clean": "rimraf -rf dist/* && rimraf -rf ./*-*.tgz",
-    "postinstall": "cd ./example && npm i",
     "prebuild": "yarn clean",
     "prepublishOnly": "yarn build",
-    "npm:pack": "yarn build && npm pack",
-    "npm:publish": "yarn build && npm publish",
     "lint": "eslint . --ext .ts",
     "lint:fix": "yarn lint -- --fix",
     "prettier-format": "prettier --config .prettierrc 'src/**/*.ts' --write"
