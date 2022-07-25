@@ -14,8 +14,7 @@
   ],
   "scripts": {
     "dev": "vite --host",
-    "test": "vite --port 5888",
-    "build": "tsc && vite build"
+    "test": "vite --port 5888"
   },
   "dependencies": {
     "lit": "^2.2.7"

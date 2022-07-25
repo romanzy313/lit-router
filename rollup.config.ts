@@ -13,25 +13,14 @@ const externalDependencies: string[] = [
 ];
 
 const rollupConfig: RollupOptions = {
-  input: 'src/index.ts',
+  input: ['src/index.ts', 'src/lit-router.ts', 'src/mount/hash.ts'],
   output: [
     {
-      file: 'dist/index.js',
-      format: 'umd',
-      name: 'LitRouter',
-      sourcemap: true,
-      interop: false,
-      globals: {
-        // TODO
-        // lit: 'Lit',
-        // 'feather-route-matcher': 'c',
-        // 'lit/decorators.js': '??',
-      },
-    },
-    {
-      file: 'dist/index.es.js',
+      dir: 'dist',
+      // file: 'dist/index.es.js',
       format: 'es',
-      sourcemap: 'inline',
+      sourcemap: true,
+      // sourcemap: true,
       interop: false,
     },
   ],
@@ -56,7 +45,11 @@ const rollupConfig: RollupOptions = {
       },
       env: {
         targets: {
-          browsers: ['last 1 chrome version', 'last 1 firefox version', 'last 1 safari version'],
+          browsers: [
+            'last 1 chrome version',
+            'last 1 firefox version',
+            'last 1 safari version',
+          ],
         },
         mode: 'entry',
         coreJs: '3',

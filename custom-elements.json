@@ -1,0 +1,506 @@
+{
+  "schemaVersion": "1.0.0",
+  "readme": "",
+  "modules": [
+    {
+      "kind": "javascript-module",
+      "path": "src/LitRouter.ts",
+      "declarations": [
+        {
+          "kind": "class",
+          "description": "",
+          "name": "LitRouter",
+          "members": [
+            {
+              "kind": "field",
+              "name": "routes",
+              "type": {
+                "text": "RouteDefinitions"
+              },
+              "privacy": "private",
+              "default": "{}"
+            },
+            {
+              "kind": "field",
+              "name": "routeResult",
+              "type": {
+                "text": "RouteResult | undefined"
+              },
+              "privacy": "private"
+            },
+            {
+              "kind": "field",
+              "name": "_pending",
+              "type": {
+                "text": "boolean"
+              },
+              "privacy": "private",
+              "default": "true"
+            },
+            {
+              "kind": "field",
+              "name": "placeholder",
+              "type": {
+                "text": "() => any"
+              },
+              "privacy": "private"
+            },
+            {
+              "kind": "field",
+              "name": "matcher",
+              "type": {
+                "text": "Matcher<RouteDefinition> | undefined"
+              },
+              "privacy": "private"
+            },
+            {
+              "kind": "field",
+              "name": "mount",
+              "type": {
+                "text": "MountInterface"
+              },
+              "privacy": "private",
+              "default": "new NoHook()"
+            },
+            {
+              "kind": "field",
+              "name": "resolvedResults",
+              "type": {
+                "text": "Set<string>"
+              },
+              "privacy": "private",
+              "default": "new Set()"
+            },
+            {
+              "kind": "field",
+              "name": "status",
+              "type": {
+                "text": "RouteState"
+              }
+            },
+            {
+              "kind": "field",
+              "name": "isPending"
+            },
+            {
+              "kind": "field",
+              "name": "error",
+              "type": {
+                "text": "Error | undefined"
+              }
+            },
+            {
+              "kind": "field",
+              "name": "html",
+              "type": {
+                "text": "TemplateResult<1> | undefined"
+              }
+            },
+            {
+              "kind": "method",
+              "name": "register",
+              "privacy": "public",
+              "parameters": [
+                {
+                  "name": "path",
+                  "type": {
+                    "text": "string"
+                  }
+                },
+                {
+                  "name": "definition",
+                  "type": {
+                    "text": "RouteDefinition"
+                  }
+                }
+              ]
+            },
+            {
+              "kind": "method",
+              "name": "withDefaultRoutes",
+              "privacy": "public"
+            },
+            {
+              "kind": "method",
+              "name": "withPlaceholder",
+              "privacy": "public",
+              "parameters": [
+                {
+                  "name": "html",
+                  "type": {
+                    "text": "() => TemplateResult"
+                  }
+                }
+              ]
+            },
+            {
+              "kind": "method",
+              "name": "define",
+              "privacy": "public",
+              "parameters": [
+                {
+                  "name": "definitions",
+                  "type": {
+                    "text": "RouteDefinitions"
+                  }
+                }
+              ]
+            },
+            {
+              "kind": "method",
+              "name": "mountTo",
+              "privacy": "public",
+              "parameters": [
+                {
+                  "name": "mount",
+                  "type": {
+                    "text": "new () => MountInterface"
+                  }
+                }
+              ]
+            },
+            {
+              "kind": "method",
+              "name": "start",
+              "privacy": "public"
+            },
+            {
+              "kind": "method",
+              "name": "stop",
+              "privacy": "public"
+            },
+            {
+              "kind": "method",
+              "name": "navigateSilent",
+              "privacy": "private",
+              "return": {
+                "type": {
+                  "text": "Promise<boolean>"
+                }
+              },
+              "parameters": [
+                {
+                  "name": "path",
+                  "type": {
+                    "text": "Path"
+                  }
+                }
+              ]
+            },
+            {
+              "kind": "method",
+              "name": "navigate",
+              "privacy": "public",
+              "return": {
+                "type": {
+                  "text": "Promise<boolean>"
+                }
+              },
+              "parameters": [
+                {
+                  "name": "path",
+                  "type": {
+                    "text": "Path"
+                  }
+                }
+              ]
+            },
+            {
+              "kind": "method",
+              "name": "tryNavigate",
+              "privacy": "private",
+              "return": {
+                "type": {
+                  "text": "Promise<RouteResult>"
+                }
+              },
+              "parameters": [
+                {
+                  "name": "path",
+                  "type": {
+                    "text": "Path"
+                  }
+                }
+              ]
+            },
+            {
+              "kind": "method",
+              "name": "back",
+              "privacy": "public"
+            },
+            {
+              "kind": "method",
+              "name": "forward",
+              "privacy": "public"
+            },
+            {
+              "kind": "method",
+              "name": "buildFailedPendingRoute",
+              "privacy": "private",
+              "return": {
+                "type": {
+                  "text": "PendingErrorRoute"
+                }
+              },
+              "parameters": [
+                {
+                  "name": "where",
+                  "type": {
+                    "text": "string"
+                  }
+                },
+                {
+                  "name": "withStatus",
+                  "type": {
+                    "text": "number"
+                  }
+                },
+                {
+                  "name": "error",
+                  "type": {
+                    "text": "Error"
+                  }
+                },
+                {
+                  "name": "request",
+                  "type": {
+                    "text": "RouteRequest"
+                  }
+                }
+              ]
+            },
+            {
+              "kind": "method",
+              "name": "matchRoute",
+              "privacy": "private",
+              "return": {
+                "type": {
+                  "text": "Promise<PendingOkRoute>"
+                }
+              },
+              "parameters": [
+                {
+                  "name": "path",
+                  "type": {
+                    "text": "Path"
+                  }
+                }
+              ]
+            },
+            {
+              "kind": "method",
+              "name": "convertUnresolvedError",
+              "privacy": "private",
+              "return": {
+                "type": {
+                  "text": "{\n    error: Error;\n    withStatus: number;\n  }"
+                }
+              },
+              "parameters": [
+                {
+                  "name": "error",
+                  "type": {
+                    "text": "any"
+                  }
+                }
+              ]
+            },
+            {
+              "kind": "method",
+              "name": "tryResolveRoute",
+              "privacy": "private",
+              "parameters": [
+                {
+                  "name": "pendingRoute",
+                  "type": {
+                    "text": "PendingOkRoute"
+                  }
+                }
+              ]
+            },
+            {
+              "kind": "method",
+              "name": "renderRoute",
+              "privacy": "private",
+              "return": {
+                "type": {
+                  "text": "Promise<RouteResult>"
+                }
+              },
+              "parameters": [
+                {
+                  "name": "pendingRoute",
+                  "type": {
+                    "text": "PendingRoute"
+                  }
+                }
+              ]
+            }
+          ],
+          "superclass": {
+            "name": "WebEventEmitter",
+            "package": "@romanzy/web-event-emitter"
+          }
+        }
+      ],
+      "exports": [
+        {
+          "kind": "js",
+          "name": "LitRouter",
+          "declaration": {
+            "name": "LitRouter",
+            "module": "src/LitRouter.ts"
+          }
+        }
+      ]
+    },
+    {
+      "kind": "javascript-module",
+      "path": "src/defaultRoutes.ts",
+      "declarations": [
+        {
+          "kind": "function",
+          "name": "buildDefaultRoutes",
+          "parameters": [
+            {
+              "name": "withDefault",
+              "type": {
+                "text": "boolean"
+              }
+            }
+          ]
+        }
+      ],
+      "exports": [
+        {
+          "kind": "js",
+          "name": "buildDefaultRoutes",
+          "declaration": {
+            "name": "buildDefaultRoutes",
+            "module": "src/defaultRoutes.ts"
+          }
+        }
+      ]
+    },
+    {
+      "kind": "javascript-module",
+      "path": "src/index.ts",
+      "declarations": [],
+      "exports": [
+        {
+          "kind": "js",
+          "name": "LitRouter",
+          "declaration": {
+            "name": "LitRouter",
+            "module": "./LitRouter"
+          }
+        },
+        {
+          "kind": "js",
+          "name": "*",
+          "declaration": {
+            "name": "*",
+            "package": "./types"
+          }
+        }
+      ]
+    },
+    {
+      "kind": "javascript-module",
+      "path": "src/lit-router.ts",
+      "declarations": [
+        {
+          "kind": "class",
+          "description": "",
+          "name": "LitRouterElement",
+          "members": [
+            {
+              "kind": "field",
+              "name": "router",
+              "privacy": "public",
+              "static": true,
+              "default": "new LitRouter()"
+            },
+            {
+              "kind": "field",
+              "name": "routes",
+              "type": {
+                "text": "RouteDefinitions"
+              },
+              "attribute": "routes"
+            },
+            {
+              "kind": "field",
+              "name": "currentView",
+              "privacy": "private",
+              "default": "html``"
+            }
+          ],
+          "attributes": [
+            {
+              "name": "routes",
+              "type": {
+                "text": "RouteDefinitions"
+              },
+              "fieldName": "routes"
+            }
+          ],
+          "superclass": {
+            "name": "LitElement",
+            "package": "lit"
+          },
+          "tagName": "lit-router",
+          "customElement": true
+        }
+      ],
+      "exports": [
+        {
+          "kind": "js",
+          "name": "LitRouterElement",
+          "declaration": {
+            "name": "LitRouterElement",
+            "module": "src/lit-router.ts"
+          }
+        },
+        {
+          "kind": "custom-element-definition",
+          "name": "lit-router",
+          "declaration": {
+            "name": "LitRouterElement",
+            "module": "src/lit-router.ts"
+          }
+        }
+      ]
+    },
+    {
+      "kind": "javascript-module",
+      "path": "src/types.ts",
+      "declarations": [],
+      "exports": []
+    },
+    {
+      "kind": "javascript-module",
+      "path": "src/unhandledError.ts",
+      "declarations": [
+        {
+          "kind": "variable",
+          "name": "unhandledErrorRoute",
+          "type": {
+            "text": "ErrorRouteDefinition"
+          },
+          "default": "{\n  resolve: () => [],\n  render: ({ error, request }) => {\n    return html`<div>\n      Unhandled route error in ${request.path}. Error message: ${error.message}\n    </div>`;\n  },\n}"
+        }
+      ],
+      "exports": [
+        {
+          "kind": "js",
+          "name": "unhandledErrorRoute",
+          "declaration": {
+            "name": "unhandledErrorRoute",
+            "module": "src/unhandledError.ts"
+          }
+        }
+      ]
+    }
+  ]
+}

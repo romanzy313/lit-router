@@ -3,20 +3,14 @@
     "moduleResolution": "node",
     "target": "es2020",
     "declaration": true,
-    "declarationDir": "types",
+    "declarationDir": "dist",
     "skipLibCheck": true,
-    "sourceMap": true,
     "strict": true,
     "noImplicitAny": false,
     "esModuleInterop": true,
+    "baseUrl": "src",
     "outDir": "dist",
     "lib": ["esnext", "dom"],
-    // "typeRoots": ["node_modules/@types"],
-    // "types": ["jest", "node"],
-    "baseUrl": ".",
-    "paths": {
-      "lib-name": ["src"]
-    },
     "experimentalDecorators": true,
     "emitDecoratorMetadata": true
   },

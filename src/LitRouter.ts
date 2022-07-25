@@ -5,7 +5,7 @@
 
 import { html, nothing, TemplateResult } from 'lit';
 import { WebEventEmitter } from '@romanzy/web-event-emitter';
-import { unhandledErrorRoute } from './defaults';
+import { unhandledErrorRoute } from './unhandledError';
 import createMatcher from 'feather-route-matcher';
 import {
   RouteDefinitions,
@@ -28,7 +28,6 @@ import {
 } from './types';
 import { NoHook } from './mount/none';
 import { Hash } from './mount/hash';
-import { ErrorShape, Pipeline2 } from './middleware/pipeline';
 
 export class LitRouter extends WebEventEmitter<EventMap> {
   private routes: RouteDefinitions = {};
@@ -39,14 +38,13 @@ export class LitRouter extends WebEventEmitter<EventMap> {
   // FIX check this question
   private matcher?: Matcher<RouteDefinition>;
   private mount: MountInterface = new NoHook();
-  private pipeline = new Pipeline2();
   // private pipeline = Pipeline<PendingOkRoute>;
   private resolvedResults: Set<string> = new Set();
 
   constructor() {
     super();
-    this.pipeline.push('resolve', this.tryResolveRoute);
-    this.pipeline.push('render', this.renderRoute);
+    // this.pipeline.push('resolve', this.tryResolveRoute);
+    // this.pipeline.push('render', this.renderRoute);
     // this.pipeline.push(this.renderRoute);
   }
 

@@ -9,6 +9,8 @@
   - [ ] Handle redirects
 - [ ] Cache html results of routes, not just resolution status. cache:true on route overrides
 
+- [ ] remove lit from the name? as this can be generic
+
 ## Low priority
 
 - [ ] Add wildcards \* and \*\*

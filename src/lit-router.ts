@@ -42,4 +42,9 @@ export class LitRouterElement extends LitElement {
   }
 }
 
-// customElements.define('lit-router-2', LitRouter);
+// this is not working??
+declare global {
+  interface HTMLElementTagNameMap {
+    'lit-router': LitRouter;
+  }
+}

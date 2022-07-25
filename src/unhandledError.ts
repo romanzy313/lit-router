@@ -10,8 +10,3 @@ export const unhandledErrorRoute: ErrorRouteDefinition = {
   },
 };
 // <pre>${(error as any).message ?? error ?? 'Unkown'}</pre>;
-
-// TODO
-export const buildDefaultRoutes = (withDefault: boolean) => {
-  return {};
-};
