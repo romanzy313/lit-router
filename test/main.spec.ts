@@ -49,7 +49,7 @@ test('main test', async ({ page }) => {
   // this works
   expect(page.locator(`lit-router:has-text("Hello, manual")`)).resolves;
   // and this is broken
-  // await expect(page.locator(`lit-router`)).toMatch('Hello, manual');
+  await expect(page.locator(`lit-router`)).toContainText('Hello, manual');
 
   await page.goBack();
   expect(page.locator(`lit-router:has-text("You have no access to /admin")`))
