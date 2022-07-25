@@ -13,7 +13,7 @@ async function testLink(
   expect(page.locator(`lit-router:has-text("${pageContent}")`)).resolves;
 }
 
-test('test', async ({ page }) => {
+test('main test', async ({ page }) => {
   await page.goto('/');
 
   await expect(page).toHaveTitle('Lit Router example');
@@ -46,9 +46,10 @@ test('test', async ({ page }) => {
   // now do manual page navigation
 
   await page.goto('#/remote-component/manual');
+  // this works
   expect(page.locator(`lit-router:has-text("Hello, manual")`)).resolves;
-
-  //test the hash router
+  // and this is broken
+  // await expect(page.locator(`lit-router`)).toMatch('Hello, manual');
 
   await page.goBack();
   expect(page.locator(`lit-router:has-text("You have no access to /admin")`))
@@ -56,4 +57,12 @@ test('test', async ({ page }) => {
 
   await page.goForward();
   expect(page.locator(`lit-router:has-text("Hello, manual")`)).resolves;
+});
+
+test('can start on a non-index hash', async ({ page }) => {
+  await page.goto('#/test');
+
+  await expect(page).toHaveTitle('Lit Router example');
+
+  expect(page.locator('lit-router:has-text("test page")')).resolves;
 });
