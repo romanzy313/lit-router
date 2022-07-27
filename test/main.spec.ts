@@ -10,7 +10,7 @@ async function testLink(
 ) {
   await page.locator(`a:has-text("${linkText}")`).click();
   await expect(page).toHaveURL(url);
-  expect(page.locator(`lit-router:has-text("${pageContent}")`)).resolves;
+  await expect(page.locator(`lit-router >> div`)).toHaveText(pageContent);
 }
 
 test('main test', async ({ page }) => {
@@ -18,7 +18,8 @@ test('main test', async ({ page }) => {
 
   await expect(page).toHaveTitle('Lit Router example');
 
-  expect(page.locator('lit-router:has-text("index page")')).resolves;
+  // Error here
+  await expect(page.locator(`lit-router >> div`)).toHaveText('index page');
 
   await testLink(page, 'Test', '#/test', 'test page');
   await testLink(
@@ -39,24 +40,26 @@ test('main test', async ({ page }) => {
     '#/resolve-error',
     'Unhandled route error in /resolve-error. Error message: resolve error'
   );
-  expect(page.locator("lit-router:has-text('Will never render')")).rejects;
+  await expect(page.locator(`lit-router >> div`)).not.toHaveText(
+    'Will never render'
+  );
 
   await testLink(page, 'Admin page', '#/admin', 'You have no access to /admin');
 
   // now do manual page navigation
 
   await page.goto('#/remote-component/manual');
-  // this works
-  expect(page.locator(`lit-router:has-text("Hello, manual")`)).resolves;
-  // and this is broken
-  await expect(page.locator(`lit-router`)).toContainText('Hello, manual');
+
+  await expect(page.locator(`lit-router >> div`)).toHaveText('Hello, manual');
 
   await page.goBack();
-  expect(page.locator(`lit-router:has-text("You have no access to /admin")`))
-    .resolves;
 
+  await expect(page.locator(`lit-router >> div`)).toHaveText(
+    'You have no access to /admin'
+  );
   await page.goForward();
-  expect(page.locator(`lit-router:has-text("Hello, manual")`)).resolves;
+
+  await expect(page.locator(`lit-router >> div`)).toHaveText('Hello, manual');
 });
 
 test('can start on a non-index hash', async ({ page }) => {

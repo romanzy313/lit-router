@@ -7,7 +7,7 @@ export class RemoteComponent extends LitElement {
   name!: string;
 
   render() {
-    return html` Hello, ${this.name} `;
+    return html` <div>Hello, ${this.name}</div>`;
   }
 
   static styles = css`
